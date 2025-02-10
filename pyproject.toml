@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = 'ollamate'
+dependencies = [
+  "ollama>0.4.0",
+]
+dynamic = ["version"]
+authors = [
+  { name="Iraj Jelodari", email="Iraj.Jelo@gmail.com" },
+]
+description = "Ollamate is a simple AI assistant for local LLMs hosted on your machine using Ollama. it will support some custom functions and a RAG system."
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+keywords = ["ollama", "llm", "chat", "llama", "ai", "assistant", "bot", "GUI"]
+
+[project.urls]
+Homepage = "https://github.com/iraj-jelo/ollamate"
+Issues = "https://github.com/iraj-jelo/ollamate/issues"
+
+[tool.hatch.version]
+path = "src/ollamate/main.py"
+
+[project.scripts]
+ollamate = "ollamate.main:main"
+om = "ollamate.main:main"
+
+[tool.ruff.lint.pyflakes]
+allowed-unused-imports = [
+  "tkinter.ttk" # ttk will be used by the tk windows and widgets implicitly.
+]

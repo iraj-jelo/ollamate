@@ -1,0 +1,14 @@
+{
+    "http_proxy": "",
+    "https_proxy": "",
+    "ollama_host": "http://127.0.0.1:11434",
+    "ollama_models": [
+        "llama3.2:3b",
+        "codegemma:2b",
+        "llama3.2-vision:11b",
+        "codellama:7b-python",
+        "llama3.2:latest"
+    ],
+    "ollama_selected_model_name": "llama3.2:latest",
+    "socks5_proxy": ""
+}
