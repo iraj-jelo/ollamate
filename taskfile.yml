@@ -1,0 +1,83 @@
+version: '3'
+
+vars:
+  PACKAGE_DIR: $(pwd)
+  PACKAGE_NAME: $(python -c "import os;import pathlib;print(pathlib.Path(os.getcwd()).name)")
+
+tasks:
+  default:
+    desc: Print the package name and its current version as default.
+    cmds:
+      - echo {{.PACKAGE_NAME}} v$(task version)
+      - task -l
+    silent: true
+
+  version:
+    desc: Current version of the package.
+    cmds:
+      - cd {{.PACKAGE_DIR}} && echo $(hatch version)
+    silent: true
+  
+  install:
+    desc: Install the package using pip from dist files.
+    cmds:
+      - cd {{.PACKAGE_DIR}} && pip install {{.PACKAGE_DIR}}/dist/{{.PACKAGE_NAME}}-$(hatch version).tar.gz --no-input
+    silent: true
+  
+  uninstall:
+    desc: Uninstall the package using pip.
+    cmds:
+      - pip uninstall {{.PACKAGE_NAME}} --no-input
+    silent: true
+  
+  rm-dist-dir:
+    esc: Remove the dist directory and all its files. 
+    cmds:
+      - cd {{.PACKAGE_DIR}} && rm -rd dist/;
+    silent: true
+
+  rm-dist-files:
+    desc: Remove the current version dist files. 
+    cmds:
+      - cd {{.PACKAGE_DIR}} && rm -rd dist/{{.rm-dist-files}}-$(hatch version)*;
+    silent: true
+
+  build:
+    desc: Build dist files to publish in PyPi. 
+    cmds:
+      - cd {{.PACKAGE_DIR}} && python -m build;
+    silent: true
+
+  upload:
+    desc: Upload the packaged dist files to PyPi using your API token.
+    dotenv: ['.env']
+    cmds:
+      - echo "twine upload .\dist\* -u $PYPI_USER -p $PYPI_TOKEN"
+      - cd {{.PACKAGE_DIR}} && twine upload .\dist\* -u $PYPI_USER -p $PYPI_TOKEN;
+    silent: true
+
+  run-package:
+    desc: Run the package.
+    cmds:
+      - cd {{.PACKAGE_DIR}}/src && python -B -m {{.PACKAGE_NAME}}.main
+    silent: true
+
+  rebuild:
+    desc: Rebuild and Reinstall the package during development and test.
+    cmds:
+      - task rm-dist-files
+      - task build
+      - task install
+    silent: true
+
+  reinstall:
+    desc: Rebuild and Reinstall the package during development and test.
+    cmds:
+      - task rebuild
+    silent: true
+
+  lspkg:
+    desc: List files and directories in the package directory.
+    cmds:
+      - ls -la {{.PACKAGE_DIR}}/src/{{.PACKAGE_NAME}}
+    silent: true
